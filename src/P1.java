@@ -17,30 +17,53 @@ public class P1 {
 	
 	
 	public static void main(String[] args) {
-		SymTest();
 		
-		//addDecl((String name, Sym sym) throws DuplicateSymException, EmptySymTableException), addScope(), lookupLocal(String name), lookupGlobal(String name),
-		//removeScope() throws EmptySymTableException, print()
-		
-		
-	}
-	//need to test: getType(), toString()
-	private static void SymTest() {
+		//testing sym.java file
 		String[] symString = {"int", "double", "float", "char"};
 		for (int i=0; i<symString.length;i++) {
 			Sym sym = new Sym(new String(symString[i]));
 		
 		
 			if (!(sym.getType().equals(symString[i]))) {
-			System.out.println("Error at SymTest (getType), when symString" + symString[i]);
+			System.out.println("Wrong result at SymTest (getType), when symString" + symString[i]);
 			}
 		
 			if (!(sym.toString().equals(symString[i]))) {
-			System.out.println("Error at SymTest (toString), when symString" + symString[i]);
+			System.out.println("Wrong result at SymTest (toString), when symString" + symString[i]);
 			}
 		}
+		
+		//testing symtable.java file
+		
+		SymTableTest();
+		
+		
 	}
-//	private static void SymTableTest() {
-//		symTab = new SymTable();
-//	}
-}
+	
+	//addDecl((String name, Sym sym) throws DuplicateSymException, EmptySymTableException), 
+	//addScope(), 
+	//lookupLocal(String name), 
+	//lookupGlobal(String name),
+	//print()
+	private static void SymTableTest() {
+		SymTable symTab = new SymTable();
+		try {
+			symTab.removeScope(); //should throw EmptySymTableException
+//			//add something here to check removal of scope.
+			symTab.removeScope(); //should NOT throw EmptySymTableException
+			
+//		} catch (EmptySymTableException e) { 
+//			System.out.println("EmptySymTableException thrown on attempt to remove item from empty table");
+//		
+//		
+//		} catch (DuplicateSymException e) { 
+//			System.out.println("DuplicateSymException thrown on attempt when first HashMap in the list "
+//				+ "already contains the given name as a key,");
+//		
+//		} catch (NullPointerException e) { 
+//			System.out.println("NullPointerException thrown on attempt to add null items to HashMap");
+//		}
+	}
+		}
+	}
+
