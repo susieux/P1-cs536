@@ -39,7 +39,7 @@ public class SymTable {
 	
 	//If this SymTable's list is empty, throw an EmptySymTableException. 
 	//Otherwise, if the first HashMap in the list contains name as a key, return the associated Sym; otherwise, return null.
-	public Sym lookupLocal(String name) {
+	public Sym lookupLocal(String name) throws EmptySymTableException {
 		if (symList.isEmpty()) {
 			throw new EmptySymTableException();
 		} else if (symList.get(0).containsKey(name)) {
@@ -51,7 +51,7 @@ public class SymTable {
 	
 	//If this SymTable's list is empty, throw an EmptySymTableException. If any HashMap in the list contains name as a key, 
 	//return the first associated Sym (i.e., the one from the HashMap that is closest to the front of the list); otherwise, return null.
-	public Sym lookupGlobal(String name) {
+	public Sym lookupGlobal(String name) throws EmptySymTableException {
 		if (symList.isEmpty()) {
 			throw new EmptySymTableException();
 		}
@@ -59,10 +59,9 @@ public class SymTable {
 		for (HashMap<String, Sym> it : symList) {
 			if (it.containsKey(name)) {
 				return it.get(name);
-			} else {
-				return null;
 			}
 		}
+		return null;
 	}
 	
 	//If this SymTable's list is empty, throw an EmptySymTableException; otherwise, remove the HashMap from the front of the list. 
