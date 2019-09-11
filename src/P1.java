@@ -1,69 +1,195 @@
 
 public class P1 {
-//	private static SymTable symTab;
-//	Be sure that your P1.java tests all of the Sym and SymTable operations and all situations under which exceptions are thrown. 
-//	Also think about testing both “boundary” and “non-boundary” cases.
-	
-//	It is up to you how your program works. A suggested approach is to write your program so that output is only produced if one 
-//	of the methods that it is testing does not work as expected (e.g., if the lookupLocal method of the SymTable class returns 
-//	null when you expect it to return a non-null value). This will make it much easier to determine whether your test 
-//	succeeds or fails. The one exception to this approach is that P1.java will need to test the print method of the SymTable 
-//	class and that will cause output to be produced.
-//	To help you understand better the kind of code you would write using this suggested approach, look at TestList.java. 
-//	This file contains a main program designed to test a (fictional) List class whose methods are documented in TestList.java. 
-//	You are being asked to write something similar (in a file called P1.java) to test the Sym and SymTable classes. 
-//	You should be able to write P1.java before you write the classes that it's designed to test.
 
-	
-	
 	public static void main(String[] args) {
-		
-		//testing sym.java file
-		String[] symString = {"int", "double", "float", "char"};
-		for (int i=0; i<symString.length;i++) {
+
+		// testing Sym.java file
+		String[] symString = { "int", "double", "float", "char" };
+		for (int i = 0; i < symString.length; i++) {
 			Sym sym = new Sym(new String(symString[i]));
-		
-		
+
 			if (!(sym.getType().equals(symString[i]))) {
-			System.out.println("Wrong result at SymTest (getType), when symString" + symString[i]);
+				System.out.println("Wrong result at SymTest (getType).");
 			}
-		
+
 			if (!(sym.toString().equals(symString[i]))) {
-			System.out.println("Wrong result at SymTest (toString), when symString" + symString[i]);
+				System.out.println("Wrong result at SymTest (toString).");
 			}
 		}
-		
-		//testing symtable.java file
-		
-		SymTableTest();
-		
-		
-	}
-	
-	//addDecl((String name, Sym sym) throws DuplicateSymException, EmptySymTableException), 
-	//addScope(), 
-	//lookupLocal(String name), 
-	//lookupGlobal(String name),
-	//print()
-	private static void SymTableTest() {
+
+		// testing SymTable.java file
 		SymTable symTab = new SymTable();
+
+		// testing removeScope and SymTable constructor
 		try {
-			symTab.removeScope(); //should throw EmptySymTableException
-//			//add something here to check removal of scope.
-			symTab.removeScope(); //should NOT throw EmptySymTableException
-			
-//		} catch (EmptySymTableException e) { 
-//			System.out.println("EmptySymTableException thrown on attempt to remove item from empty table");
-//		
-//		
-//		} catch (DuplicateSymException e) { 
-//			System.out.println("DuplicateSymException thrown on attempt when first HashMap in the list "
-//				+ "already contains the given name as a key,");
-//		
-//		} catch (NullPointerException e) { 
-//			System.out.println("NullPointerException thrown on attempt to add null items to HashMap");
-//		}
-	}
+			symTab.removeScope(); // this should not fail. It is removing the constructor HashMap
+			symTab.removeScope(); // should throw EmptySymTableException
+		} catch (EmptySymTableException e) {
+			// expected.
+
+			// testing addScope
+			try {
+				symTab.addScope();
+				symTab.removeScope(); // should not throw EmptySymTableException, if addScope did it's job
+			} catch (Exception ex) {
+				System.out.println(
+						"Exception thrown when adding and removing a scope immediately. This should not happen.");
+			}
 		}
+
+		// testing addDecl exceptions
+		try {
+			symTab.addDecl("name", new Sym("sym"));
+		} catch (DuplicateSymException e) {
+			System.out.println("DuplicateSymException thrown. This shouldn't happen.");
+
+		} catch (EmptySymTableException ex) {
+			// expected
+		}
+		symTab.addScope();
+		symTab.addScope();
+
+		try {
+			symTab.addDecl("name", new Sym("sym"));
+			symTab.addDecl("name", new Sym("sym"));
+		} catch (DuplicateSymException e) {
+			// expected
+
+		} catch (EmptySymTableException ex) {
+			System.out.println(
+					"EmptySymTableException thrown when trying addDecl to populated sym table. This shouldn't happen.");
+		}
+
+		// testing addDecl null
+		try {
+			symTab.removeScope();
+			symTab.removeScope();
+			symTab.addScope();
+			symTab.addDecl("name", null);
+
+		} catch (NullPointerException e) {
+			//expected
+		} catch (DuplicateSymException e) {
+			System.out.println(
+					"DuplicateSymException thrown on attempt to add null objects to test addDecl scopes. This shouldn't happen.");
+		} catch (EmptySymTableException ey) {
+			System.out.println(
+					"EmptySymTableException thrown on attempt to remove test addDecl scopes. This shouldn't happen.");
+		}
+		
+		try {
+			symTab.removeScope();
+			symTab.addScope();
+			symTab.addDecl(null, null);
+
+		} catch (NullPointerException e) {
+			//expected
+		} catch (DuplicateSymException e) {
+			System.out.println(
+					"DuplicateSymException thrown on attempt to add null objects to test addDecl scopes. This shouldn't happen.");
+		} catch (EmptySymTableException ey) {
+			System.out.println(
+					"EmptySymTableException thrown on attempt to remove test addDecl scopes. This shouldn't happen.");
+		}
+		
+		try {
+			symTab.removeScope();
+			symTab.addScope();
+			symTab.addDecl(null, new Sym("sym"));
+
+		} catch (NullPointerException e) {
+			//expected
+		} catch (DuplicateSymException e) {
+			System.out.println(
+					"DuplicateSymException thrown on attempt to add null objects to test addDecl scopes. This shouldn't happen.");
+		} catch (EmptySymTableException ey) {
+			System.out.println(
+					"EmptySymTableException thrown on attempt to remove test addDecl scopes. This shouldn't happen.");
+		}
+		
+		//testing addDecl DuplicateSymException
+		try {
+			symTab.removeScope();
+			symTab.addScope();
+			symTab.addScope();
+			symTab.addDecl("name", new Sym("sym"));
+			symTab.addDecl("name", new Sym("sym"));
+
+		} catch (NullPointerException e) {
+			System.out.println(
+					"NullPointerException thrown on attempt test DuplicateSymException. This shouldn't happen.");
+		} catch (DuplicateSymException e) {
+			//expected
+		} catch (EmptySymTableException ey) {
+			System.out.println(
+					"EmptySymTableException thrown on attempt to remove test addDecl scopes. This shouldn't happen.");
+		}
+
+	// TESTING LOOKUPLOCAL AND LOOKUPGLOBAL. ALL SCOPE SHOULD BE REMOVED.
+	// testing lookupLocal exception
+	try
+	{
+		symTab.lookupLocal("Test");
+	}catch(
+	EmptySymTableException ex)
+	{
+		// expected
 	}
 
+	// testing lookupGlobal exception
+	try
+	{
+		symTab.lookupGlobal("Test");
+	}catch(
+	EmptySymTableException ex)
+	{
+		// expected
+	}
+
+	symTab.addScope();
+	// testing lookupLocal null test
+	try
+	{
+		if (symTab.lookupLocal("Test") == null) {
+			// expected
+		} else {
+			System.out.println("Failed lookupLocal null test");
+		}
+	}catch(
+	EmptySymTableException ex)
+	{
+		System.out.println("EmptySymTableException thrown on null test. (lookupLocal). This shouldn't happen.");
+	}
+
+	// testing lookupGlobal null test
+	try
+	{
+		if (symTab.lookupGlobal("Test") == null) {
+			// expected
+		} else {
+			System.out.println("Failed lookupLocal null test");
+		}
+	}catch(
+	EmptySymTableException ex)
+	{
+		System.out.println("EmptySymTableException thrown on null test. (lookupGlobal). This shouldn't happen.");
+	}
+
+	
+	//testing addDecl() and lookupLocal and lookupGlobal search functions
+	try{
+		
+	} catch (NullPointerException e) {
+		System.out.println(
+				"NullPointerException thrown on attempt test DuplicateSymException. This shouldn't happen.");
+	} catch (DuplicateSymException e) {
+		//expected
+	} catch (EmptySymTableException ey) {
+		System.out.println(
+				"EmptySymTableException thrown on attempt to remove test addDecl scopes. This shouldn't happen.");
+	}
+	// lookupLocal(String name),
+	// lookupGlobal(String name),
+	// print()
+
+}}
