@@ -2,9 +2,9 @@
 //
 // Title:            P1
 // Files:            P1.java
-//					 Sym.java
-//					 SymTable.java
-//					 DuplicateSymException.java
+//                   Sym.java
+//                   SymTable.java
+//                   DuplicateSymException.java
 //					 EmptySymTableException.java
 // Semester:         CS536 Fall 2019
 //
