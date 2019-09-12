@@ -1,6 +1,32 @@
+///////////////////////////////////////////////////////////////////////////////
+//
+// Title:            P1
+// Files:            P1.java
+//					 Sym.java
+//					 SymTable.java
+//					 DuplicateSymException.java
+//					 EmptySymTableException.java
+// Semester:         CS536 Fall 2019
+//
+// Author:           Susie Chongthaweephol
+// Email:            chongthaweep@wisc.edu
+// CS Login:         susie
+// Lecturer's Name:  Aws Albarghouthi
+//
+///////////////////////////////////////////////////////////////////////////////
 
+/**
+ * This class checks the implementation of Sym.java, SymTable.java, 
+ * DuplicateSymException.java, and EmptySymTableException.java.
+ * 
+ * @author Susie */
 public class P1 {
 
+	/**
+	 * This class checks the implementation of all the classes in this
+	 * program.
+	 * 
+	 * @author Susie */
 	public static void main(String[] args) {
 
 		// testing Sym.java file
@@ -178,6 +204,17 @@ public class P1 {
 	
 	//testing addDecl() and lookupLocal and lookupGlobal search functions
 	try{
+		symTab.addDecl("name", new Sym("sym"));
+		System.out.print("lookupLocal should print out \"sym\". Actual result: ");
+		System.out.print(symTab.lookupLocal("name"));
+		System.out.println();
+		System.out.print("lookupGlobal should print out \"sym\". Actual result: ");
+		System.out.print(symTab.lookupGlobal("name"));
+		
+		symTab.removeScope();
+		symTab.removeScope();
+////		symTab.removeScope();
+		
 		
 	} catch (NullPointerException e) {
 		System.out.println(
@@ -188,8 +225,22 @@ public class P1 {
 		System.out.println(
 				"EmptySymTableException thrown on attempt to remove test addDecl scopes. This shouldn't happen.");
 	}
-	// lookupLocal(String name),
-	// lookupGlobal(String name),
-	// print()
+	
+	
+	//testing print() empty sym table
+	symTab.print();
+	try{
+		
+		symTab.addDecl("name", new Sym("sym"));
+		symTab.print();
+	} catch (NullPointerException e) {
+		System.out.println(
+				"NullPointerException thrown on attempt test DuplicateSymException. This shouldn't happen.");
+	} catch (DuplicateSymException e) {
+		//expected
+	} catch (EmptySymTableException ey) {
+		System.out.println(
+				"EmptySymTableException thrown on attempt to remove test addDecl scopes. This shouldn't happen.");
+	}
 
 }}

@@ -1,19 +1,52 @@
+///////////////////////////////////////////////////////////////////////////////
+//
+// Title:            P1
+// Files:            P1.java
+//					 Sym.java
+//					 SymTable.java
+//					 DuplicateSymException.java
+//					 EmptySymTableException.java
+// Semester:         CS536 Fall 2019
+//
+// Author:           Susie Chongthaweephol
+// Email:            chongthaweep@wisc.edu
+// CS Login:         susie
+// Lecturer's Name:  Aws Albarghouthi
+//
+///////////////////////////////////////////////////////////////////////////////
 
+/**
+ * This class implements the Sym constructor and simple public methods- 
+ * getType() and toString().
+ * 
+ * @author Susie */
 public class Sym {
 	private String symType;
-//	The Sym class must be in a file named Sym.java. You must implement the following Sym constructor and public methods (and no other public or protected methods):
-
-	//This is the constructor; it should initialize the Sym to have the given type.
+	
+	/**
+	 * The constructor initializes the field symType to the defined type.
+	 *
+	 * @param type is the identifier represented by a String
+	 */
 	public Sym(String type) {
 		this.symType = type;
 	}
 	
-	//Return this Sym's type.
+	/**
+	 * getType() returns the Sym's given type.
+	 *
+	 * @return type of Sym.
+	 */
 	public String getType() {
 		return symType;
 	}
 	
-	//Return this Sym's type. (This method will be changed later in a future project when more information is stored in a Sym.)
+	/**
+	 * toString() presently returns the Sym's type, although
+	 * it will be changed in a future project.
+	 *
+	 * @return type of Sym.
+	 */
 	public String toString() {
 		return getType();
 	}
