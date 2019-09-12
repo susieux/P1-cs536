@@ -5,7 +5,7 @@
 //                   Sym.java
 //                   SymTable.java
 //                   DuplicateSymException.java
-//					 EmptySymTableException.java
+//                   EmptySymTableException.java
 // Semester:         CS536 Fall 2019
 //
 // Author:           Susie Chongthaweephol
