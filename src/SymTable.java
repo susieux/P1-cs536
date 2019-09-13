@@ -34,9 +34,13 @@ public class SymTable {
 
 	/**
 	 * This method adds the name and sym defined to the first HashMap in the
-	 * list. If the list is empty, EmptySymTableException is thrown If any of
-	 * the param is null, NullPointerException is thrown If there are
-	 * duplicates, DuplicateSymException this thrown
+	 * list.
+	 * 
+	 * If the list is empty, EmptySymTableException is thrown.
+	 * 
+	 * If any of the param is null, NullPointerException is thrown.
+	 * 
+	 * If there are duplicates, DuplicateSymException is thrown.
 	 *
 	 * @param name is the name of the Sym
 	 * @param sym  is the type
