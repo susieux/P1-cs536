@@ -13,7 +13,7 @@
 // CS Login:         susie
 // Lecturer's Name:  Aws Albarghouthi
 //
-///////////////////////////////////////////////////////////////////////////////
+//////////////////////////// 80 columns wide //////////////////////////////////
 
 /**
  * This class checks the implementation of Sym.java, SymTable.java,
@@ -32,7 +32,7 @@ public class P1 {
 
 		System.out.println("Should only print exceptions when thrown. "
 				+ "Will also print which files are tested before test.");
-		
+
 		// testing Sym.java file
 		System.out.println("Testing Sym.java file methods.");
 		String[] symString = { "int", "double", "float", "char" };
@@ -59,7 +59,7 @@ public class P1 {
 		} catch (EmptySymTableException e) {
 			// expected.
 		}
-		
+
 		// testing addScope
 		try {
 			symTab.addScope();
@@ -78,8 +78,8 @@ public class P1 {
 		} catch (EmptySymTableException ex) {
 			// expected
 		}
-		
-		//adding more scope for addDecl testing
+
+		// adding more scope for addDecl testing
 		symTab.addScope();
 		symTab.addScope();
 
@@ -91,17 +91,17 @@ public class P1 {
 		} catch (EmptySymTableException ex) {
 			System.out.println(
 					"EmptySymTableException thrown when trying addDecl to "
-					+ "populated sym table. This shouldn't happen.");
+							+ "populated sym table. This shouldn't happen.");
 		}
 
 		// testing addDecl null
 		try {
-			
-			//removing scopes from last test
+
+			// removing scopes from last test
 			symTab.removeScope();
 			symTab.removeScope();
-			
-			//adding scope to test addDecl null
+
+			// adding scope to test addDecl null
 			symTab.addScope();
 			symTab.addDecl("name", null);
 
@@ -110,89 +110,86 @@ public class P1 {
 		} catch (DuplicateSymException e) {
 			System.out.println(
 					"DuplicateSymException thrown on attempt to add null "
-					+ "objects to test addDecl scopes. "
-					+ "This shouldn't happen.");
+							+ "objects to test addDecl scopes. "
+							+ "This shouldn't happen.");
 		} catch (EmptySymTableException ey) {
 			System.out.println(
 					"EmptySymTableException thrown on attempt to remove "
-					+ "test addDecl scopes. This shouldn't happen.");
+							+ "test addDecl scopes. This shouldn't happen.");
 		}
 
 		try {
-			//removing scope from last test
+			// removing scope from last test
 			symTab.removeScope();
-			
-			//adding scope to test addDecl null
+
+			// adding scope to test addDecl null
 			symTab.addScope();
 			symTab.addDecl(null, null);
 
 		} catch (NullPointerException e) {
 			// expected
 		} catch (DuplicateSymException e) {
-			System.out.println(
-					"DuplicateSymException thrown on attempt to add "
+			System.out.println("DuplicateSymException thrown on attempt to add "
 					+ "null objects to test addDecl scopes. "
 					+ "This shouldn't happen.");
 		} catch (EmptySymTableException ey) {
 			System.out.println(
 					"EmptySymTableException thrown on attempt to remove "
-					+ "test addDecl scopes. This shouldn't happen.");
+							+ "test addDecl scopes. This shouldn't happen.");
 		}
 
 		try {
-			//removing scope from last test
+			// removing scope from last test
 			symTab.removeScope();
-			
-			//adding scope to test addDecl null
+
+			// adding scope to test addDecl null
 			symTab.addScope();
 			symTab.addDecl(null, new Sym("sym"));
 
 		} catch (NullPointerException e) {
 			// expected
 		} catch (DuplicateSymException e) {
-			System.out.println(
-					"DuplicateSymException thrown on attempt to add "
+			System.out.println("DuplicateSymException thrown on attempt to add "
 					+ "null objects to test addDecl scopes. "
 					+ "This shouldn't happen.");
 		} catch (EmptySymTableException ey) {
 			System.out.println(
 					"EmptySymTableException thrown on attempt to remove "
-					+ "test addDecl scopes. This shouldn't happen.");
+							+ "test addDecl scopes. This shouldn't happen.");
 		}
 
 		// testing addDecl DuplicateSymException
 		try {
-			//removing scope from last test
+			// removing scope from last test
 			symTab.removeScope();
-			
-			//adding duplicates
+
+			// adding duplicates
 			symTab.addScope();
 			symTab.addScope();
 			symTab.addDecl("name", new Sym("sym"));
 			symTab.addDecl("name", new Sym("sym"));
 
 		} catch (NullPointerException e) {
-			System.out.println(
-					"NullPointerException thrown on attempt test "
+			System.out.println("NullPointerException thrown on attempt test "
 					+ "DuplicateSymException. This shouldn't happen.");
 		} catch (DuplicateSymException e) {
 			// expected
 		} catch (EmptySymTableException ey) {
 			System.out.println(
 					"EmptySymTableException thrown on attempt to remove test "
-					+ "addDecl scopes. This shouldn't happen.");
+							+ "addDecl scopes. This shouldn't happen.");
 		}
 
 		// testing lookupLocal and lookupGlobal
 		// testing lookupLocal exception
 		try {
-			//removing scopes from last test
+			// removing scopes from last test
 			symTab.removeScope();
 			symTab.removeScope();
-			
+
 			symTab.lookupLocal("Test");
 		} catch (EmptySymTableException ex) {
-			// expected 
+			// expected
 		}
 
 		// testing lookupGlobal exception
@@ -230,8 +227,8 @@ public class P1 {
 		// testing addDecl() and lookupLocal and lookupGlobal search functions
 		try {
 			symTab.addDecl("name", new Sym("sym"));
-			
-			//testing lookupLocal and lookupGlobal by console output.
+
+			// testing lookupLocal and lookupGlobal by console output.
 			System.out.println();
 			System.out.println("Expected and actual result printed here. "
 					+ "Please check manually.");
@@ -241,51 +238,50 @@ public class P1 {
 					+ " Actual result: " + symTab.lookupGlobal("name"));
 
 		} catch (NullPointerException e) {
-			System.out.println(
-					"NullPointerException thrown on attempt test "
+			System.out.println("NullPointerException thrown on attempt test "
 					+ "DuplicateSymException. This shouldn't happen.");
 		} catch (DuplicateSymException e) {
 			// expected
 		} catch (EmptySymTableException ey) {
 			System.out.println(
 					"EmptySymTableException thrown on attempt to remove test "
-					+ "addDecl scopes. This shouldn't happen.");
+							+ "addDecl scopes. This shouldn't happen.");
 		}
 
-		// testing print empty sym table
+		// testing print empty Sym table
 		try {
-			//removing scopes from last test
+			// removing scopes from last test
 			symTab.removeScope();
 			System.out.println();
-			System.out.print("Following SymTable should be empty. "
-					+ "No scope.");
+			System.out.print(
+					"Following SymTable should be empty. " + "No scope.");
 			symTab.print();
-			
+
 		} catch (NullPointerException e) {
 			System.out.println(
 					"NullPointerException thrown on attempt test print. "
-					+ "This shouldn't happen.");
+							+ "This shouldn't happen.");
 		} catch (EmptySymTableException ey) {
 			System.out.println(
 					"EmptySymTableException thrown on attempt to test print. "
-					+ "This shouldn't happen.");
+							+ "This shouldn't happen.");
 		}
-		
+
 		// testing print with scope no addDecl
 		try {
 			symTab.addScope();
-			
+
 			System.out.print("Following SymTable should be empty. "
 					+ "With scope. No addDecl.");
 			symTab.print();
-			
+
 		} catch (NullPointerException e) {
 			System.out.println(
 					"NullPointerException thrown on attempt test print. "
-					+ "This shouldn't happen.");
+							+ "This shouldn't happen.");
 		}
 
-		// testing print on populated sym table
+		// testing print on populated Sym table
 		try {
 			System.out.print("Following SymTable should be populated.");
 			symTab.addDecl("name", new Sym("sym"));
@@ -301,7 +297,7 @@ public class P1 {
 					"EmptySymTableException thrown on attempt to test print. "
 							+ "This shouldn't happen.");
 		}
-		
+
 		System.out.println("All tests completed.");
 	}
 }

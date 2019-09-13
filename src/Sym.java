@@ -1,28 +1,24 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Title:            P1
-// Files:            P1.java
-//                   Sym.java
-//                   SymTable.java
-//                   DuplicateSymException.java
-//                   EmptySymTableException.java
+// Main Class File:  P1.java
+// File:             Sym.java
 // Semester:         CS536 Fall 2019
 //
-// Author:           Susie Chongthaweephol
-// Email:            chongthaweep@wisc.edu
+// Author:           Susie Chongthaweephol, chongthaweep@wisc.edu
 // CS Login:         susie
 // Lecturer's Name:  Aws Albarghouthi
 //
-///////////////////////////////////////////////////////////////////////////////
+//////////////////////////// 80 columns wide //////////////////////////////////
 
 /**
- * This class implements the Sym constructor and simple public methods- 
+ * This class implements the Sym constructor and simple public methods-
  * getType() and toString().
  * 
- * @author Susie */
+ * @author Susie
+ */
 public class Sym {
 	private String symType;
-	
+
 	/**
 	 * The constructor initializes the field symType to the defined type.
 	 *
@@ -31,7 +27,7 @@ public class Sym {
 	public Sym(String type) {
 		this.symType = type;
 	}
-	
+
 	/**
 	 * getType() returns the Sym's given type.
 	 *
@@ -40,10 +36,10 @@ public class Sym {
 	public String getType() {
 		return symType;
 	}
-	
+
 	/**
-	 * toString() presently returns the Sym's type, although
-	 * it will be changed in a future project.
+	 * toString() presently returns the Sym's type, although it will be changed
+	 * in a future project.
 	 *
 	 * @return type of Sym.
 	 */

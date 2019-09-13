@@ -1,52 +1,48 @@
+
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Title:            P1
-// Files:            P1.java
-//                   Sym.java
-//                   SymTable.java
-//                   DuplicateSymException.java
-//                   EmptySymTableException.java
+// Main Class File:  P1.java
+// File:             SymTable.java
 // Semester:         CS536 Fall 2019
 //
-// Author:           Susie Chongthaweephol
-// Email:            chongthaweep@wisc.edu
+// Author:           Susie Chongthaweephol, chongthaweep@wisc.edu
 // CS Login:         susie
 // Lecturer's Name:  Aws Albarghouthi
 //
-///////////////////////////////////////////////////////////////////////////////
+//////////////////////////// 80 columns wide //////////////////////////////////
 import java.util.*;
 
 /**
  * This class implements a symbol table, which stores identifiers and
- * information declared in the program. The symbol table uses
- * a list of HashMaps.
+ * information declared in the program. The symbol table uses a list of
+ * HashMaps.
  * 
- * @author Susie */
+ * @author Susie
+ */
 public class SymTable {
 	private List<HashMap<String, Sym>> symList;
-	
+
 	/**
-	 * The constructor initializes the SymTable's List field to contain 
-	 * a single, empty HashMap.
+	 * The constructor initializes the SymTable's List field to contain a
+	 * single, empty HashMap.
 	 *
 	 */
-	public SymTable () {
+	public SymTable() {
 		symList = new LinkedList<HashMap<String, Sym>>();
 		symList.add(new HashMap<String, Sym>());
 	}
-	
 
 	/**
-	 * This method adds the name and sym defined to the first HashMap in
-	 * the list.
-	 * If the list is empty, EmptySymTableException is thrown
-	 * If any of the param is null, NullPointerException is thrown
-	 * If there are duplicates, DuplicateSymException this thrown
+	 * This method adds the name and sym defined to the first HashMap in the
+	 * list. If the list is empty, EmptySymTableException is thrown If any of
+	 * the param is null, NullPointerException is thrown If there are
+	 * duplicates, DuplicateSymException this thrown
 	 *
 	 * @param name is the name of the Sym
-	 * @param sym is the type
+	 * @param sym  is the type
 	 */
-	public void addDecl(String name, Sym sym) throws DuplicateSymException, EmptySymTableException {
+	public void addDecl(String name, Sym sym)
+			throws DuplicateSymException, EmptySymTableException {
 		if (symList.isEmpty()) {
 			throw new EmptySymTableException();
 		}
@@ -58,7 +54,7 @@ public class SymTable {
 		}
 		symList.get(0).put(name, sym);
 	}
-	
+
 	/**
 	 * This method adds an empty HashMap to the front of the list
 	 *
@@ -66,10 +62,10 @@ public class SymTable {
 	public void addScope() {
 		symList.add(0, new HashMap<String, Sym>());
 	}
-	
+
 	/**
-	 * This method checks if the first HashMap contains name(key) and
-	 * will return the associated Sym.
+	 * This method checks if the first HashMap contains name(key) and will
+	 * return the associated Sym.
 	 * 
 	 * If the list is empty, EmptySymTableException is thrown.
 	 *
@@ -88,8 +84,8 @@ public class SymTable {
 	}
 
 	/**
-	 * This method checks if any HashMap contains name(key) and
-	 * will return the associated Sym (HashMap closest to front of list).
+	 * This method checks if any HashMap contains name(key) and will return the
+	 * associated Sym (HashMap closest to front of list).
 	 * 
 	 * If the list is empty, EmptySymTableException is thrown.
 	 *
@@ -101,7 +97,7 @@ public class SymTable {
 		if (symList.isEmpty()) {
 			throw new EmptySymTableException();
 		}
-		
+
 		for (HashMap<String, Sym> it : symList) {
 			if (it.containsKey(name)) {
 				return it.get(name);
@@ -109,7 +105,7 @@ public class SymTable {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * This method removes the first HashMap from the front of the list.
 	 * 
@@ -123,10 +119,10 @@ public class SymTable {
 			symList.remove(0);
 		}
 	}
-	
+
 	/**
-	 * This method is used for debugging. It prints out HashMaps in the
-	 * Sym Table.
+	 * This method is used for debugging. It prints out HashMaps in the Sym
+	 * Table.
 	 * 
 	 */
 	public void print() {

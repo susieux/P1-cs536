@@ -1,25 +1,21 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Title:            P1
-// Files:            P1.java
-//                   Sym.java
-//                   SymTable.java
-//                   DuplicateSymException.java
-//                   EmptySymTableException.java
+// Main Class File:  P1.java
+// File:             DuplicateSymException.java
 // Semester:         CS536 Fall 2019
 //
-// Author:           Susie Chongthaweephol
-// Email:            chongthaweep@wisc.edu
+// Author:           Susie Chongthaweephol, chongthaweep@wisc.edu
 // CS Login:         susie
 // Lecturer's Name:  Aws Albarghouthi
 //
-///////////////////////////////////////////////////////////////////////////////
+//////////////////////////// 80 columns wide //////////////////////////////////
 
 /**
- * This class currently just defines a checked exception thrown by the
- * SymTable class.
+ * This class currently just defines a checked exception thrown by the SymTable
+ * class.
  * 
- * @author Susie */
+ * @author Susie
+ */
 public class DuplicateSymException extends Exception {
 
 }
