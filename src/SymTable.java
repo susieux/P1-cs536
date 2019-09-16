@@ -130,7 +130,7 @@ public class SymTable {
 	 * 
 	 */
 	public void print() {
-		System.out.println("\nSym Table\n");
+		System.out.print("\nSym Table\n");
 		for (HashMap<String, Sym> M : symList) {
 			System.out.println(M.toString());
 		}
