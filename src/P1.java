@@ -1,303 +1,605 @@
-///////////////////////////////////////////////////////////////////////////////
-//
-// Title:            P1
-// Files:            P1.java
-//                   Sym.java
-//                   SymTable.java
-//                   DuplicateSymException.java
-//                   EmptySymTableException.java
-// Semester:         CS536 Fall 2019
-//
-// Author:           Susie Chongthaweephol
-// Email:            chongthaweep@wisc.edu
-// CS Login:         susie
-// Lecturer's Name:  Aws Albarghouthi
-//
-//////////////////////////// 80 columns wide //////////////////////////////////
-
 /**
- * This class checks the implementation of Sym.java, SymTable.java,
- * DuplicateSymException.java, and EmptySymTableException.java.
+ * This program is designed to test the Sym and SymTable classes.
+ * The tests have been broken up into several private helper methods.  The 
+ * documentation for each helper method describes in more detail what tests
+ * are done in that method.
  * 
- * @author Susie
+ * Problems with Sym and/or SymTable methods are reported to stderr.
+ * 
+ * @author Beck Hasti, copyright 2014
  */
 public class P1 {
+    public static void main(String[] args) {
+        testSym();
+        testExceptions();
+        testAddDecl();
+        testLookup();
+        testPrint();
+    }
 
-	/**
-	 * This class checks the implementation of all the classes in this program.
-	 * 
-	 * @author Susie
-	 */
-	public static void main(String[] args) {
+    /**
+     * Helper method for printing error messages. Prints to the standard 
+     * error stream (stderr) in the following format:
+     * 
+     * ERROR[method]: msg
+     * 
+     * @param method Method in which error occurs
+     * @param msg Associated message with further details about error
+     */
+    private static void error(String method, String msg) {
+        System.err.println("ERROR[" + method + "]: " + msg);
+    }
 
-		System.out.println("Should only print exceptions when thrown. "
-				+ "Will also print which files are tested before test.");
+    /**
+     * Tests the Sym class.
+     */
+    private static void testSym() {
 
-		// testing Sym.java file
-		System.out.println("Testing Sym.java file methods.");
-		String[] symString = { "int", "double", "float", "char" };
-		for (int i = 0; i < symString.length; i++) {
-			Sym sym = new Sym(new String(symString[i]));
+        // test Sym methods using different types, including the empty 
+        // string
+        String[] typeList = {"bool", "int", ""};
 
-			if (!(sym.getType().equals(symString[i]))) {
-				System.out.println("Wrong result at SymTest (getType).");
-			}
+        for (int i = 0; i < typeList.length; i++) {
+            Sym sym = new Sym(new String(typeList[i]));
 
-			if (!(sym.toString().equals(symString[i]))) {
-				System.out.println("Wrong result at SymTest (toString).");
-			}
-		}
+            String type = sym.getType();
+            if (!type.equals(typeList[i])) {
+                error("Sym.getType", 
+                      "returns wrong value when type is " + typeList[i]);
+            }
 
-		// testing SymTable.java file
-		System.out.println("Testing SymTable.java file methods.");
-		SymTable symTab = new SymTable(); // create the Sym Table
+            type = sym.toString();
+            if (!type.equals(typeList[i])) {
+                error("Sym.toString", 
+                      "returns wrong value when type is " + typeList[i]);
+            }
+        }
 
-		// testing removeScope and SymTable constructor
-		try {
-			symTab.removeScope(); // removes constructor HashMap
-			symTab.removeScope(); // should throw EmptySymTableException
-		} catch (EmptySymTableException e) {
-			// expected.
-		}
+    }
 
-		// testing addScope
-		try {
-			symTab.addScope();
-			symTab.removeScope(); // shouldn't not throw EmptySymTableException
-		} catch (Exception ex) {
-			System.out.println("Exception thrown when adding and removing "
-					+ "a scope immediately. This should not happen.");
-		}
+    /**
+     * Tests that the SymTable class throws EmptySymTableExceptions
+     * and NullPointerExceptions under the correct conditions. 
+     *  
+     * Also tests:
+     * addScope : add HashMap to an empty and non-empty SymTable
+     * addDecl : add Sym into empty SymTable (i.e., has no HashMaps)
+     * removeScope : remove HashMap from empty and non-empty SymTable
+     * 
+     * Note: testing DuplicateSymException happens in testInsert
+     */
+    private static void testExceptions() {
+        SymTable symTab;
 
-		// testing addDecl exceptions
-		try {
-			symTab.addDecl("name", new Sym("sym"));
-		} catch (DuplicateSymException e) {
-			System.out.println("DuplicateSymException thrown. This "
-					+ "shouldn't happen.");
-		} catch (EmptySymTableException ex) {
-			// expected
-		}
+        // test remove after initially calling constructor
+        try {
+            symTab = new SymTable();
+            symTab.removeScope();  // this should NOT cause an exception
+            try {
+                symTab.removeScope();  // this SHOULD cause an exception
+                error("SymTable.removeScope", 
+                      "exception NOT thrown on empty SymTable");
+            } catch (EmptySymTableException e) {
+                // expected
+            } catch (Exception e) {
+                error("SymTable.removeScope",
+                      "wrong exception thrown on empty SymTable");
+            }
+        } catch (EmptySymTableException e) {
+            error("SymTable.removeScope", "EmptySymTableException thrown " +
+                  "after calling SymTable constructor");
+        } catch (Exception e) {
+            error("SymTable.removeScope", e.toString() +
+                  "thrown after calling SymTable constructor");
+        }
 
-		// adding more scope for addDecl testing
-		symTab.addScope();
-		symTab.addScope();
+        // test remove after adding and removing some maps
+        try {
+            symTab = new SymTable();
+            symTab.addScope();
+            symTab.addScope(); // should have 3 maps now
+            try {
+                symTab.removeScope();
+                symTab.removeScope();
+                symTab.removeScope(); // now should have no maps
+                try {
+                    symTab.removeScope();  // should cause error
+                    error("SymTable.removeScope", 
+                          "exception NOT thrown on empty SymTable");
+                } catch (EmptySymTableException e) {
+                    // expected
+                } catch (Exception e) {
+                    error("SymTable.removeScope",
+                          "wrong exception thrown on empty SymTable");
+                }
+            } catch (Exception e) {
+                error("SymTable.removeScope", "unexpected exception " + 
+                      e.toString() + "thrown on NON-empty SymTable");
+            }
+        } catch (Exception e) {
+            error("SymTable.addScope", "unexpected exception " + e.toString());
+        }
 
-		try {
-			symTab.addDecl("name", new Sym("sym"));
-			symTab.addDecl("name", new Sym("sym"));
-		} catch (DuplicateSymException e) {
-			// expected
-		} catch (EmptySymTableException ex) {
-			System.out.println(
-					"EmptySymTableException thrown when trying addDecl to "
-							+ "populated sym table. This shouldn't happen.");
-		}
+        // test addDecl throws EmptySymTableException
+        try {
+            symTab = new SymTable();
+            symTab.removeScope();
+            try {
+                symTab.addDecl("name", new Sym("type"));
+                error("SymTable.addDecl", 
+                      "EmptySymTableException NOT thrown on empty SymTable");
+            } catch (EmptySymTableException e) {
+                // expected
+            } catch (Exception e) {
+                error("SymTable.addDecl", 
+                      "wrong exception thrown on empty SymTable");
+            }
+        } catch (Exception e) {
+            error("SymTable.removeScope", "unexpected exception " + 
+                  e.toString() + "thrown on NON-empty SymTable");
+        }
 
-		// testing addDecl null
-		try {
+        // test addDecl throws NullPointerException
+        symTab = new SymTable();
+        try {
+            symTab.addDecl(null, new Sym("type"));
+            error("SymTable.addDecl", 
+                  "NullPointerException NOT thrown on addDecl(null, sym)");
+        } catch (NullPointerException e) {
+            // expected
+        } catch (Exception e) {
+            error("SymTable.addDecl", 
+                  "wrong exception thrown on addDecl(null, sym)");
+        }
 
-			// removing scopes from last test
-			symTab.removeScope();
-			symTab.removeScope();
+        try {
+            symTab.addDecl("name", null);
+            error("SymTable.addDecl", 
+                  "NullPointerException NOT thrown on addDecl(name, null)");
+        } catch (NullPointerException e) {
+            // expected
+        } catch (Exception e) {
+            error("SymTable.addDecl", 
+                  "wrong exception thrown on addDecl(name, null)");
+        }
 
-			// adding scope to test addDecl null
-			symTab.addScope();
-			symTab.addDecl("name", null);
+        try {
+            symTab.addDecl(null, null);
+            error("SymTable.addDecl", 
+                  "NullPointerException NOT thrown on addDecl(null, null)");
+        } catch (NullPointerException e) {
+            // expected
+        } catch (Exception e) {
+            error("SymTable.addDecl", 
+                  "wrong exception thrown on addDecl(null, null)");
+        }
+    }
 
-		} catch (NullPointerException e) {
-			// expected
-		} catch (DuplicateSymException e) {
-			System.out.println(
-					"DuplicateSymException thrown on attempt to add null "
-							+ "objects to test addDecl scopes. "
-							+ "This shouldn't happen.");
-		} catch (EmptySymTableException ey) {
-			System.out.println(
-					"EmptySymTableException thrown on attempt to remove "
-							+ "test addDecl scopes. This shouldn't happen.");
-		}
+    /**
+     * Tests addDecl method of SymTable:
+     * - add into SymTable with 1 HashMap
+     * - add into SymTable with >1 HashMap
+     * (note: add into SymTable with 0 HashMaps done in testExceptions)
+     * - add >1 Sym with unique names
+     * - add Sym with duplicate name in SymTable with one HashMap and with >1
+     *   HashMap (where name is in 1st HashMap) (should cause exception in 
+     *   both cases)
+     * - add Sym with name already in a HashMap but not the 1st one (should NOT
+     *   cause an exception)
+     */
+    private static void testAddDecl() {
+        SymTable symTab;
+        String name1 = "aaa", name2 = "bbb", name3 = "ccc";
+        Sym sym1 = new Sym("bool"), sym2 = new Sym("int");
 
-		try {
-			// removing scope from last test
-			symTab.removeScope();
+        // add into SymTable with just one HashMap
+        try {
+            symTab = new SymTable();
+            symTab.addDecl(name1, sym1);
+            symTab.addDecl(name2, sym2);
+            symTab.addDecl(name3, sym1);
 
-			// adding scope to test addDecl null
-			symTab.addScope();
-			symTab.addDecl(null, null);
+            try {
+                symTab.addDecl(name2, sym1);
+                error("SymTable.addDecl", "exception NOT thrown when " +
+                      "duplicate name added with 1 HashMap");
+            } catch (DuplicateSymException e) {
+                // expected
+            } catch (Exception e) {
+                error("SymTable.addDecl", "wrong exception thrown when " +
+                      "duplicate name added with 1 HashMap");
+            }
+        } catch (Exception e) {
+            error("SymTable.addDecl", "unexpected exception " + 
+                  e.toString() + " with 1 HashMap");
+        }
 
-		} catch (NullPointerException e) {
-			// expected
-		} catch (DuplicateSymException e) {
-			System.out.println("DuplicateSymException thrown on attempt to add "
-					+ "null objects to test addDecl scopes. "
-					+ "This shouldn't happen.");
-		} catch (EmptySymTableException ey) {
-			System.out.println(
-					"EmptySymTableException thrown on attempt to remove "
-							+ "test addDecl scopes. This shouldn't happen.");
-		}
+        // add into SymTable with >1 HashMap
+        try {
+            symTab = new SymTable();
+            symTab.addDecl(name1, sym1);
 
-		try {
-			// removing scope from last test
-			symTab.removeScope();
+            symTab.addScope();
+            symTab.addDecl(name2, sym2);
 
-			// adding scope to test addDecl null
-			symTab.addScope();
-			symTab.addDecl(null, new Sym("sym"));
+            symTab.addScope();
+            symTab.addDecl(name3, sym1);
 
-		} catch (NullPointerException e) {
-			// expected
-		} catch (DuplicateSymException e) {
-			System.out.println("DuplicateSymException thrown on attempt to add "
-					+ "null objects to test addDecl scopes. "
-					+ "This shouldn't happen.");
-		} catch (EmptySymTableException ey) {
-			System.out.println(
-					"EmptySymTableException thrown on attempt to remove "
-							+ "test addDecl scopes. This shouldn't happen.");
-		}
+            try {
+                symTab.addDecl(name1, sym2); // should NOT throw exception
+            } catch (DuplicateSymException e) {
+                error("SymTable.addDecl", 
+                      "exception thrown when name in another HashMap added");
+            }
 
-		// testing addDecl DuplicateSymException
-		try {
-			// removing scope from last test
-			symTab.removeScope();
+            try {
+                symTab.addDecl(name3, sym2); // should throw exception
+                error("SymTable.addDecl", "exception NOT thrown when " +
+                      "duplicate name added with >1 HashMap");
+            } catch (DuplicateSymException e) {
+                // expected
+            } catch (Exception e) {
+                error("SymTable.addDecl", "wrong exception thrown when " +
+                      "duplicate name added with >1 HashMap");
+            }
+        } catch (Exception e) {
+            error("SymTable.addDecl", "unexpected exception " + 
+                  e.toString() + " with >1 HashMap");
+        }
+    }
 
-			// adding duplicates
-			symTab.addScope();
-			symTab.addScope();
-			symTab.addDecl("name", new Sym("sym"));
-			symTab.addDecl("name", new Sym("sym"));
+    /**
+     * Tests lookupLocal and lookupGlobal methods of SymTable class.
+     * 
+     * lookupLocal: 
+     * - both successful and failing lookups in a SymTable with just one 
+     *   HashMap, and in a SymTable with multiple HashMaps (including a 
+     *   case where lookupLocal should fail, but lookupGlobal should succeed)
+     * - lookup after adding a name then calling removeScope
+     * - also test lookupLocal in a SymTab with NO HashMap (should just return 
+     *   null, no exception)
+     *   
+     * lookupGlobal: 
+     * - both successful and failing lookups in a SymTable with just one 
+     *   HashMap, and in a SymTable with multiple HashMaps, including cases 
+     *   where the looked-up name is in the first HashMap, the last HashMap, 
+     *   and some intermediate HashMap
+     * - also test lookupGlobal in a SymTable with NO HashMap (should just 
+     *   return null, no exception)
+     */
+    private static void testLookup() {
+        Sym sym, oneSym = new Sym("int");
+        SymTable symTab = new SymTable();
+        String name;  
 
-		} catch (NullPointerException e) {
-			System.out.println("NullPointerException thrown on attempt test "
-					+ "DuplicateSymException. This shouldn't happen.");
-		} catch (DuplicateSymException e) {
-			// expected
-		} catch (EmptySymTableException ey) {
-			System.out.println(
-					"EmptySymTableException thrown on attempt to remove test "
-							+ "addDecl scopes. This shouldn't happen.");
-		}
+        // put one big try-catch around entire method to catch unexpected 
+        // exceptions that happen with what should be normal removeScope and
+        // addDecl operations
+        try { 
 
-		// testing lookupLocal and lookupGlobal
-		// testing lookupLocal exception
-		try {
-			// removing scopes from last test
-			symTab.removeScope();
-			symTab.removeScope();
+            // test lookupLocal and lookupGlobal in a SymTable with no map
+            symTab = new SymTable();
+            symTab.removeScope();
 
-			symTab.lookupLocal("Test");
-		} catch (EmptySymTableException ex) {
-			// expected
-		}
+            try {
+                if (symTab.lookupLocal("aaa") != null) {
+                    error("SymTable.lookupLocal",
+                          "did not throw Exception for SymTable with no maps");
+                } 
+            } catch (Exception e) {
+                //Expected
+            }
 
-		// testing lookupGlobal exception
-		try {
-			symTab.lookupGlobal("Test");
-		} catch (EmptySymTableException ex) {
-			// expected
-		}
+            try {
+                if (symTab.lookupGlobal("aaa") != null) {
+                    error("SymTable.lookupGlobal", 
+                          "did not throw Exception for SymTable with no maps");
+                } 
+            } catch (Exception e) {
+                //Expected
+            }
 
-		symTab.addScope();
-		// testing lookupLocal null test
-		try {
-			if (symTab.lookupLocal("Test") == null) {
-				// expected
-			} else {
-				System.out.println("Failed lookupLocal null test");
-			}
-		} catch (EmptySymTableException ex) {
-			System.out.println("EmptySymTableException thrown on null test. "
-					+ "(lookupLocal). This shouldn't happen.");
-		}
+            // test lookupLocal and lookupGlobal in a SymTable with one map
+            symTab = new SymTable();
+            if (symTab.lookupLocal("aaa") != null) {
+                error("SymTable.lookupLocal", 
+                      "null not returned for lookup of aaa in new SymTable");
+            }
 
-		// testing lookupGlobal null test
-		try {
-			if (symTab.lookupGlobal("Test") == null) {
-				// expected
-			} else {
-				System.out.println("Failed lookupLocal null test");
-			}
-		} catch (EmptySymTableException ex) {
-			System.out.println("EmptySymTableException thrown on null test. "
-					+ "(lookupGlobal). This shouldn't happen.");
-		}
+            if (symTab.lookupGlobal("aaa") != null) {
+                error("SymTable.lookupGlobal",
+                      "null not returned for lookup of aaa in new SymTable");
+            }
 
-		// testing addDecl() and lookupLocal and lookupGlobal search functions
-		try {
-			symTab.addDecl("name", new Sym("sym"));
+            symTab.addDecl("aaa", oneSym);
+            if (symTab.lookupLocal("aaa") == null) {
+                error("SymTable.lookupLocal", 
+                      "unexpected failure for table with 1 item ");
+            }
+            if (symTab.lookupLocal("a") != null) {
+                error("SymTable.lookupLocal", 
+                      "unexpected success for table with 1 item ");
+            }
 
-			// testing lookupLocal and lookupGlobal by console output.
-			System.out.println();
-			System.out.println("Expected and actual result printed here. "
-					+ "Please check manually.");
-			System.out.println("lookupLocal should print out \"sym\". "
-					+ "Actual result: " + symTab.lookupLocal("name"));
-			System.out.println("lookupGlobal should print out \"sym\"."
-					+ " Actual result: " + symTab.lookupGlobal("name"));
+            if (symTab.lookupGlobal("aaa") == null) {
+                error("SymTable.lookupGlobal", 
+                      "unexpected failure for table with 1 item ");
+            }
+            if (symTab.lookupGlobal("a") != null) {
+                error("SymTable.lookupGlobal", 
+                      "unexpected success for table with 1 item ");
+            }
 
-		} catch (NullPointerException e) {
-			System.out.println("NullPointerException thrown on attempt test "
-					+ "DuplicateSymException. This shouldn't happen.");
-		} catch (DuplicateSymException e) {
-			// expected
-		} catch (EmptySymTableException ey) {
-			System.out.println(
-					"EmptySymTableException thrown on attempt to remove test "
-							+ "addDecl scopes. This shouldn't happen.");
-		}
+            // test lookupLocal and lookupGlobal in a SymTable with four maps
+            symTab.addScope();
+            symTab.addDecl("bbb", oneSym);
+            symTab.addScope();
+            symTab.addDecl("ccc", oneSym);
+            symTab.addScope();
+            Sym localSym = new Sym("double");
+            symTab.addDecl("ddd", localSym);
+            if (symTab.lookupLocal("aaa") != null) {
+                error("SymTable.lookupLocal", 
+                      "null not returned for lookup of value aaa in 4th map");
+            }
+            if (symTab.lookupGlobal("aaa") != oneSym) {
+                error("SymTable.lookupGlobal", 
+                      "bad value returned for lookup of value aaa in 4th map");
+            }
 
-		// testing print empty Sym table
-		try {
-			// removing scopes from last test
-			symTab.removeScope();
-			System.out.println();
-			System.out.print(
-					"Following SymTable should be empty. " + "No scope.");
-			symTab.print();
+            if (symTab.lookupLocal("bbb") != null) {
+                error("SymTable.lookupLocal", 
+                      "null not returned for lookup of value bbb in 3rd map");
+            }
+            if (symTab.lookupGlobal("bbb") != oneSym) {
+                error("SymTable.lookupGlobal", 
+                      "bad value returned for lookup of value bbb in 3rd map");
+            }
 
-		} catch (NullPointerException e) {
-			System.out.println(
-					"NullPointerException thrown on attempt test print. "
-							+ "This shouldn't happen.");
-		} catch (EmptySymTableException ey) {
-			System.out.println(
-					"EmptySymTableException thrown on attempt to test print. "
-							+ "This shouldn't happen.");
-		}
+            if (symTab.lookupLocal("ddd") != localSym) {
+                error("SymTable.lookupLocal", 
+                      "bad value returned for lookup of value ddd in local map");
+            }
+            if (symTab.lookupGlobal("ddd") != localSym) {
+                error("SymTable.lookupGlobal", 
+                      "bad value returned for lookup of value ddd in local map");
+            }
 
-		// testing print with scope no addDecl
-		try {
-			symTab.addScope();
+            // test local and global lookups after removing a map
+            symTab.removeScope();
+            if (symTab.lookupLocal("ddd") != null) {
+                error("SymTable.lookupLocal", "null not returned for " +
+                      "lookup of ddd after removing its table");
+            }
+            if (symTab.lookupGlobal("ddd") != null) {
+                error("SymTable.lookupGlobal", "null not returned for " +
+                      "lookup of ddd after removing its table");
+            }
 
-			System.out.print("Following SymTable should be empty. "
-					+ "With scope. No addDecl.");
-			symTab.print();
+            // add 10 items, look them all up both locally and globally,
+            // both just after one addition, and after all additions
+            symTab = new SymTable();
+            name = "b";
+            sym = new Sym("float");
+            for (int j=0; j<10; j++) {
+                try {
+                    symTab.addDecl(name, sym);
+                } catch (DuplicateSymException e) {
+                    error("SymTable.addDecl", "DuplicateSymException for " +
+                          "table with 1 HashMap, multiple entries");
+                } catch (EmptySymTableException e) {
+                    error("SymTable.addDecl", "EmptySymTableException " +
+                          "for table with 1 HashMap, multiple entries");
+                }
+                if (symTab.lookupLocal(name) == null) {
+                    error("SymTable.lookupLocal", "unexpected failure " +
+                          "for table with 1 HashMap, multiple entries");
+                }
+                else if (symTab.lookupLocal(name) != sym) {
+                    error("SymTable.lookupLocal", "wrong value returned " +
+                          "for table with 1 HashMap, multiple entries");
+                }
+                if (symTab.lookupGlobal(name) == null) {
+                    error("SymTable.lookupGlobal", "unexpected failure " +
+                          "for table with 1 HashMap, multiple entries");
+                }
+                else if (symTab.lookupGlobal(name) != sym) {
+                    error("SymTable.lookupGlobal", "wrong value returned " +
+                          "for table with 1 HashMap, multiple entries");
+                }
+                name += "b";
+            }
 
-		} catch (NullPointerException e) {
-			System.out.println(
-					"NullPointerException thrown on attempt test print. "
-							+ "This shouldn't happen.");
-		}
+            name = "b";
+            for (int j=0; j<10; j++) {
+                if (symTab.lookupLocal(name) == null) {
+                    error("SymTable.lookupLocal", 
+                          "unexpected failure for table with 1 HashMap, " +
+                          "multiple entries (lookup after adding all)");
+                }
+                if (symTab.lookupGlobal(name) == null) {
+                    error("SymTable.lookupGlobal", 
+                          "unexpected failure for table with 1 HashMap, " +
+                          "multiple entries (lookup after adding all)");
+                }
+                name += "b";
+            }
 
-		// testing print on populated Sym table
-		try {
-			System.out.print("Following SymTable should be populated.");
-			symTab.addDecl("name", new Sym("sym"));
-			symTab.print();
-		} catch (NullPointerException e) {
-			System.out.println(
-					"NullPointerException thrown on attempt test print. "
-							+ "This shouldn't happen.");
-		} catch (DuplicateSymException e) {
-			// expected
-		} catch (EmptySymTableException ey) {
-			System.out.println(
-					"EmptySymTableException thrown on attempt to test print. "
-							+ "This shouldn't happen.");
-		}
+            // SymTable with two HashMaps
+            // add a new HashMap and try both local and global lookup
+            // of entries in the old HashMap
+            symTab.addScope();
+            name = "b";
+            if (symTab.lookupGlobal(name) != sym) {
+                error("SymTable.lookupGlobal", "bad value returned for " +
+                      "name in non-local HashMap of table with 2 HashMaps");
+            }
+            for (int j=0; j<10; j++) {
+                if (symTab.lookupLocal(name) != null) {
+                    error("SymTable.lookupLocal", 
+                          "unexpected success for table with 2 HashMaps");
+                }
+                if (symTab.lookupGlobal(name) != sym) {
+                    error("SymTable.lookupGlobal", 
+                          "unexpected failure for table with 2 HashMaps ");
+                }
+                name += "b";
+            }
 
-		System.out.println("All tests completed.");
-	}
+            // add names that are already in the first HashMap to the new
+            // HashMap; make sure that they can be added and that they're
+            // found by both local and global lookup
+            name = "b";
+            for (int j=0; j<10; j++) {
+                sym = new Sym("float");
+                try {
+                    symTab.addDecl(name, sym);
+                    if (symTab.lookupLocal(name) == null) {
+                        error("SymTable.lookupLocal", 
+                              "unexpected null for table with 2 HashMaps");
+                    }
+                    else if (symTab.lookupLocal(name) != sym) {
+                        error("SymTable.lookupLocal", 
+                              "wrong value returned for table with 2 HashMaps");
+                    }
+                    if (symTab.lookupGlobal(name) == null) {
+                        error("SymTable.lookupGlobal", 
+                              "unexpected failure for table with 2 HashMaps ");
+                    }
+                    else if (symTab.lookupGlobal(name) != sym) {
+                        error("SymTable.lookupGlobal", 
+                              "unexpected failure for table with 2 HashMaps");
+                    }
+                } catch (DuplicateSymException e) {
+                    error("SymTable.addDecl", 
+                          "unexpected DuplicateSymException for add into " +
+                          "table with 2 HashMaps");
+                } catch (EmptySymTableException e) {
+                    error("SymTable.addDecl", 
+                          "unexpected EmptySymTableException for add " +
+                          "into table with 2 HashMaps");
+                }
+                name += "b";
+            }
+
+            // add names (to the 2nd HashMap) that are NOT in the 1st one
+            // make sure both local and global lookup find them
+            name = "c";
+            for (int j=0; j<10; j++) {
+                sym = new Sym("int");
+                try {
+                    symTab.addDecl(name, sym);
+                    if (symTab.lookupLocal(name) == null) {
+                        error("SymTable.lookupLocal", 
+                              "unexpected failure for table with 2 HashMaps, " +
+                              "new name");
+                    }
+                    else if (symTab.lookupLocal(name) != sym) {
+                        error("SymTable.lookupLocal", 
+                              "bad value returned for table with 2 HashMaps, " +
+                              "new name");
+                    }
+                    if (symTab.lookupGlobal(name) == null) {
+                        error("SymTable.lookupGlobal", 
+                              "unexpected failure for table with 2 HashMaps, " +
+                              "new name");
+                    }
+                    else if (symTab.lookupGlobal(name) != sym) {
+                        error("SymTable.lookupGlobal",
+                              "bad value returned for table with 2 HashMaps, " +
+                              "new name");
+                    }
+                } catch (DuplicateSymException e) {
+                    error("SymTable.addDecl", 
+                          "unexpected DuplicateSymException for table with 2 " +
+                          "HashMaps, new name");
+                } catch (EmptySymTableException e) {
+                    error("SymTable.addDecl", 
+                          "unexpected EmptySymTableException for table " +
+                          "with 2 HashMaps, new name");
+                }
+                name += "b";
+            }
+
+            // SymTable with many HashMaps (20 names in each)
+            for (int j=0; j<100; j++) {
+                Integer tableint = new Integer(j);
+                symTab.addScope();
+                for (int k=0; k<20; k++) {
+                    Integer symint = new Integer(k);
+                    name = tableint.toString() + symint.toString();
+                    sym = new Sym("int");
+                    try {
+                        symTab.addDecl(name, sym);
+                        if (symTab.lookupLocal(name) != sym) {
+                            error("SymTable.lookupLocal", 
+                                  "unexpected failure for table with many HashMaps");
+                        }
+                        if (symTab.lookupGlobal(name) != sym) {
+                            error("SymTable.lookupGlobal", 
+                                  "unexpected failure for table with many HashMaps ");
+                        }
+                    } catch (DuplicateSymException e) {
+                        error("SymTable.addDecl", 
+                              "DuplicateSymException for table with many HashMaps");
+                    } catch (EmptySymTableException e) {
+                        error("SymTable.addDecl", 
+                              "EmptySymTableException for table with many HashMaps");
+                    }
+                }
+            }
+
+            // test lookupGlobal on one name from each HashMap
+            for (int j=0; j<100; j++) {
+                Integer tableint = new Integer(j);
+                name = tableint.toString() + "6";
+                if (symTab.lookupGlobal(name) == null) {
+                    error("SymTable.lookupGlobal", 
+                          "unexpected failure for table with many HashMaps " +
+                          "(after all added)");
+                }
+            }
+
+        } catch (Exception e) {
+            error("SymTable", "unexpected exception " + e.toString() + 
+                  " using addDecl/removeScope when testing lookup");
+        }
+    }
+
+    /**
+     * Tests the SymTable.print method by calling it with one empty HashMap,
+     * with several non-empty HashMaps, and with no HashMaps.
+     */
+    private static void testPrint() {
+        SymTable symTab = new SymTable();
+        try {
+            symTab.print();
+            try {
+                symTab.addDecl("aaa", new Sym("bool"));
+                symTab.addDecl("bbb", new Sym("int"));
+                symTab.addScope();
+                symTab.addDecl("ccc", new Sym("void"));
+                symTab.addScope();
+                symTab.addDecl("ddd", new Sym("double"));
+            } catch (Exception e) {
+                error("SymTable.addDecl", 
+                      "unexpected exception " + e.toString());
+            }
+            symTab.print();
+            
+            for (int i = 0; i < 3; i++) {
+                try {
+                    symTab.removeScope();
+                } catch (Exception e) {
+                    error("SymTable.removeScope", 
+                          "unexpected exception " + e.toString());
+                }
+                symTab.print();
+            } 
+            
+        } catch (Exception e) {
+            error("SymTable.print", 
+                  "unexpected exception " + e.toString());
+        }
+    }
 }

@@ -1,0 +1,23 @@
+Should only print exceptions when thrown. Will also print which files are tested before test.
+Testing Sym.java file methods.
+Testing SymTable.java file methods.
+
+Expected and actual result printed here. Please check manually.
+lookupLocal should print out "sym". Actual result: sym
+lookupGlobal should print out "sym". Actual result: sym
+
+Following SymTable should be empty. No scope.
+Sym Table
+
+
+Following SymTable should be empty. With scope. No addDecl.
+Sym Table
+
+{}
+
+Following SymTable should be populated.
+Sym Table
+
+{name=sym}
+
+All tests completed.
