@@ -1,15 +1,3 @@
-
-///////////////////////////////////////////////////////////////////////////////
-//
-// Main Class File:  P1.java
-// File:             SymTable.java
-// Semester:         CS536 Fall 2019
-//
-// Author:           Susie Chongthaweephol, chongthaweep@wisc.edu
-// CS Login:         susie
-// Lecturer's Name:  Aws Albarghouthi
-//
-//////////////////////////// 80 columns wide //////////////////////////////////
 import java.util.*;
 
 /**
@@ -24,7 +12,7 @@ public class SymTable {
 
 	/**
 	 * The constructor initializes the SymTable's List field to contain a
-	 * single, empty HashMap.
+	 * single, emptyÂ HashMap.
 	 *
 	 */
 	public SymTable() {
