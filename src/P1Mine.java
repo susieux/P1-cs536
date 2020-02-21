@@ -1,20 +1,3 @@
-///////////////////////////////////////////////////////////////////////////////
-//
-// Title:            P1
-// Files:            P1.java
-//                   Sym.java
-//                   SymTable.java
-//                   DuplicateSymException.java
-//                   EmptySymTableException.java
-// Semester:         CS536 Fall 2019
-//
-// Author:           Susie Chongthaweephol
-// Email:            chongthaweep@wisc.edu
-// CS Login:         susie
-// Lecturer's Name:  Aws Albarghouthi
-//
-//////////////////////////// 80 columns wide //////////////////////////////////
-
 /**
  * This class checks the implementation of Sym.java, SymTable.java,
  * DuplicateSymException.java, and EmptySymTableException.java.
